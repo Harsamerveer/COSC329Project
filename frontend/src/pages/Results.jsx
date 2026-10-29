@@ -20,7 +20,7 @@ const MetricsTable = ({ res }) => {
             <tr key={m.name} data-testid={`metrics-row-${m.name}`} className="border-b border-[#F0EBE1]">
               <td className="px-3 py-2.5 font-sans font-semibold flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{ background: MODEL_COLORS[m.name] }} />{m.name}</td>
               {METRICS.map(([k]) => (
-                <td key={k} className={`px-3 py-2.5 ${m.metrics[k].mean === best[k] ? "text-[#1E3A8A] font-bold" : ""}`}>
+                <td key={k} className={`px-3 py-2.5 whitespace-nowrap ${m.metrics[k].mean === best[k] ? "text-[#1E3A8A] font-bold" : ""}`}>
                   {pm(m.metrics[k])}
                   <span className="block text-[10px] text-slate-400">trial σ {fmt3(m.metrics[k].trial_std)}</span>
                 </td>
@@ -136,7 +136,7 @@ const Holdout = ({ rows }) => (
         {rows.map((r) => (
           <tr key={r.split + r.model} className="border-b border-[#F0EBE1]">
             <td className="px-3 py-1.5">{r.split}</td><td className="px-3 py-1.5 font-sans">{r.model}</td>
-            {METRICS.map(([k]) => <td key={k} className="px-3 py-1.5">{pm(r[k])}</td>)}
+            {METRICS.map(([k]) => <td key={k} className="px-3 py-1.5 whitespace-nowrap">{pm(r[k])}</td>)}
           </tr>
         ))}
       </tbody>
@@ -147,7 +147,7 @@ const Holdout = ({ rows }) => (
 
 const Body = () => {
   const { data } = useLatestRun();
-  const run = data?.run;
+  const run = data?.run?.full || data?.run?.preview ? data.run : data?.last_results_run;
   const res = run?.full || run?.preview;
   if (!res) return <p data-testid="results-empty" className="text-sm text-slate-500">No results yet — start a run on the Experiments page.</p>;
   return (

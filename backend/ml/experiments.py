@@ -86,7 +86,7 @@ def _run_parallel(X, y, jobs, on_done, label):
         on_done()
         tag, res = r
         n_tr = len(jobs[0][0])
-        smote_note = f"train≈{n_tr} rows (SMOTE-balanced), test≈{len(y) - n_tr} rows (real balance)"
+        smote_note = f"train {n_tr} rows -> SMOTE-balanced, test {len(y) - n_tr} rows at real class balance"
         scores = ", ".join(f"{k}: AUC {v['roc_auc']:.3f} F1 {v['f1']:.3f}" for k, v in res.items())
         log.event("experiments", f"{label} - fold {len(results)}/{len(jobs)} done ({smote_note}) | {scores}")
     return results

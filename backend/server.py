@@ -98,7 +98,10 @@ def experiments_run():
 @api.get("/experiments/latest")
 def experiments_latest():
     run = db.runs.find_one(sort=[("created_at", -1)])
-    return {"run": _public(run), "algorithms": content.ALGORITHMS}
+    last = None
+    if run and not (run.get("full") or run.get("preview")):
+        last = db.runs.find_one({"$or": [{"full": {"$ne": None}}, {"preview": {"$ne": None}}]}, sort=[("created_at", -1)])
+    return {"run": _public(run), "last_results_run": _public(last), "algorithms": content.ALGORITHMS}
 
 
 @api.get("/logs")

@@ -10,6 +10,8 @@ export default function BackendLog() {
   const [events, setEvents] = useState([]);
   const [live, setLive] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [error, setError] = useState(false);
+  const [cleared, setCleared] = useState(false);
   const since = useRef(null);
   const box = useRef(null);
 
@@ -17,7 +19,14 @@ export default function BackendLog() {
     if (!live) return;
     let stop = false;
     const tick = async () => {
-      const { data } = await api.get("/logs", { params: since.current ? { since: since.current } : { limit: 400 } });
+      let data;
+      try {
+        ({ data } = await api.get("/logs", { params: since.current ? { since: since.current } : { limit: 400 } }));
+        setError(false);
+      } catch {
+        setError(true);
+        return;
+      }
       if (stop || !data.events.length) return;
       since.current = data.events[data.events.length - 1].ts;
       setEvents((e) => [...e, ...data.events].slice(-2000));
@@ -43,11 +52,11 @@ export default function BackendLog() {
           ))}
           <div className="ml-auto flex gap-2">
             <Btn variant="outline" data-testid="btn-log-toggle" onClick={() => setLive((l) => !l)}>{live ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}{live ? "Pause" : "Resume"}</Btn>
-            <Btn variant="outline" data-testid="btn-log-clear" onClick={() => setEvents([])}><Trash2 className="w-4 h-4" />Clear view</Btn>
+            <Btn variant="outline" data-testid="btn-log-clear" onClick={() => { setEvents([]); setCleared(true); }}><Trash2 className="w-4 h-4" />Clear view</Btn>
           </div>
         </div>
         <div ref={box} data-testid="log-console" className="log-scroll bg-[#0F172A] text-slate-200 rounded-md p-4 h-[65vh] overflow-y-auto font-mono text-[12px] leading-relaxed">
-          {shown.length === 0 && <p className="text-slate-500">No events yet — load the dataset or run the experiments.</p>}
+          {shown.length === 0 && <p className="text-slate-500">{cleared ? "View cleared — waiting for new events…" : "No events yet — load the dataset or run the experiments."}</p>}
           {shown.map((e, i) => (
             <div key={i} data-testid="log-line" className="flex gap-3 hover:bg-white/5">
               <span className="text-slate-500 flex-shrink-0">{e.ts.slice(11, 19)}</span>
@@ -56,7 +65,7 @@ export default function BackendLog() {
             </div>
           ))}
         </div>
-        <p className="mt-2 text-xs text-slate-500 font-mono">{shown.length} events shown · times in UTC</p>
+        <p className="mt-2 text-xs text-slate-500 font-mono">{shown.length} events shown · times in UTC{error && <span data-testid="log-error" className="text-[#DC2626]"> · connection lost, retrying…</span>}</p>
       </Panel>
     </div>
   );

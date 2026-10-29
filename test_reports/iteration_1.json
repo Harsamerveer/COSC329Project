@@ -1,0 +1,40 @@
+{
+  "summary": "Ran end-to-end tests on the OULAD at-risk predictor. Backend: 14/14 pytest cases pass (dataset status/summary, explore valid/404, features info/sample/clamp/csv, experiments/latest, logs limit/since, report pdf). Frontend: all 7 pages work. Overview shows 32,593 registrations and 22 course rows; the Load button is disabled with 'Dataset loaded'. Explore: the course select switches to BBB_2013B and calls /api/explore/BBB_2013B (200); all 4 charts and panels render. Features: 29 definition rows, 11 tradeoffs, 15 sample rows, CSV download works. Experiments: stage, status and progress update; the Run button is disabled with 'Running…' during a run. Results: PREVIEW badge, 5 metric rows, bars, ROC, 5 confusion cards, 9 interpretation items, the three importance tabs switch, and the hold-out table has 15 rows. Backend log: polls every 2s (15 polls in 30s, all 200), autoscrolls, filters by source, Pause/Resume and Clear work. Report: the link returns a 200 application/pdf. Mobile 390px: the drawer opens and closes on navigation, and no page overflows horizontally. INCIDENT CAUSED BY TESTER: I created /app/backend/tests/test_oulad_api.py, which triggered uvicorn --reload. That interrupted the in-progress run (id from E1's session, stopped at 77/295 and marked 'interrupted'; its preview and holdout results are kept in Mongo). I moved the test to /app/tests/ (outside the reload watch path) and restarted the run with POST /api/experiments/run (new run c5a52a91-db15-48b6-9968-803126faef91). It was running fine at about 53/295 when testing ended, so full results should arrive in about 20 minutes.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/experiments/latest", "issue": "Returns the newest run even when it has no results yet. Right after a re-run starts, Results and Experiments show 'No results yet' for about 1-2 minutes, even though the previous run has preview/full results. /api/report/pdf already falls back to the latest run that has results. Consider also returning the last completed run (e.g. 'last_results') so the dashboard does not blank out."},
+      {"endpoint": "ml/experiments.py _run_parallel", "issue": "Known cosmetic: the fold log says 'train≈22150 rows (SMOTE-balanced)', but 22150 is the size before SMOTE."},
+      {"endpoint": "server.py startup", "issue": "Any file write under /app/backend (including tests) triggers --reload and kills the background run thread. Runs live in-process and cannot be resumed. Worth noting in the README or test instructions."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Results (mobile 390px)", "issues": ["Metric cells like '0.774 ± 0.009' and the 'trial σ' text wrap onto 3-4 lines. Add whitespace-nowrap to the cells; the table already scrolls horizontally."]},
+      {"screen": "Desktop 1920px all pages", "issues": ["Content is capped at about 1300px and left-aligned, leaving a wide empty band on the right. Consider centering or a wider max-width."]},
+      {"screen": "Backend log", "issues": ["After 'Clear view' the empty-state text reads 'No events yet — load the dataset or run the experiments', which is misleading. Show 'View cleared — waiting for new events' instead.", "The tick() call in polling has no try/catch, so a network error throws an unhandled promise rejection every 2s and shows no error state."]},
+      {"screen": "Explore charts", "issues": ["Week x-axis tick labels are unevenly spaced (e.g. '11 12' crowded together). Minor."]}
+    ]
+  },
+  "test_report_links": ["/app/tests/test_oulad_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Optional: make /api/experiments/latest (or the UI) fall back to the most recent run with results while a new run is still in its first stage",
+    "Add whitespace-nowrap to the metric cells in the Results and holdout tables for mobile",
+    "Add error handling to BackendLog polling and fix the empty-state text after Clear",
+    "Reword the fold log message about SMOTE row counts (known)",
+    "Check that run c5a52a91-db15-48b6-9968-803126faef91 finishes (the tester restarted it after accidentally interrupting E1's run)"
+  ],
+  "critical_code_review_comments": [
+    "Runs execute in a daemon thread inside the uvicorn process, so any reload or restart kills them (startup marks them 'interrupted'). This is acceptable for an MVP but fragile.",
+    "log.recent uses ts > since on ISO strings, which works because they are fixed-format UTC isoformat. Events that share a microsecond timestamp could be skipped (negligible).",
+    "features_csv rebuilds the joined DataFrame on every request. Fine at this size."
+  ],
+  "updated_files": ["/app/tests/test_oulad_api.py"],
+  "success_rate": {"backend": "100%", "frontend": "100% functional (minor design notes)"},
+  "seed_data_creation": "None. Side effect: E1's run was interrupted and a new experiment run was started (c5a52a91-db15-48b6-9968-803126faef91).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Keep test files in /app/tests/, NOT /app/backend/, because writes there hot-reload the backend and kill in-progress runs. Run with: REACT_APP_BACKEND_URL=... pytest /app/tests/test_oulad_api.py. test_experiments_latest fails for about 1-2 minutes right after a new run starts, because no preview exists yet. The Explore select options are labelled like 'BBB · 2013B (1,767)'. After the full run completes, re-verify the FULL RUN badge on /results and panel-full-summary on /experiments (not verified this iteration)."
+}

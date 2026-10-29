@@ -45,7 +45,7 @@ export default function App() {
             <p className="hidden sm:block text-xs text-slate-500">Predicting students at risk of failing or withdrawing · midterm cut-off</p>
             <StatusBar />
           </div>
-          <main className="px-4 sm:px-8 lg:px-12 py-8 lg:py-10 max-w-[1400px] w-full">
+          <main className="px-4 sm:px-8 lg:px-12 py-8 lg:py-10 max-w-[1600px] w-full mx-auto">
             <Routes>
               <Route path="/" element={<Overview />} />
               <Route path="/explore" element={<Explore />} />
