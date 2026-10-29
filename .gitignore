@@ -88,3 +88,9 @@ android-sdk/
 /backend/data/
 backend/data/raw/studentVle.csv
 backend/data/prepared/vle.pkl
+.env
+.env.*
+*.env
+credentials.json
+*.key
+.credentials
