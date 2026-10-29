@@ -1,0 +1,184 @@
+{
+  "project_title": "OULAD Early Assessment At-Risk Student Prediction Dashboard",
+  "design_philosophy": {
+    "archetype": "Swiss Academic Research Notebook",
+    "theme_mode": "Light Academic (Warm Paper & Crisp Slate)",
+    "tone": "Calm, academic, data-dense, highly legible, precise, research-notebook aesthetic with side-by-side methodology notes and statistical confidence indicators.",
+    "anti_patterns_forbidden": [
+      "NO dark generic cyberpunk gradients or full-screen neon glossy surfaces",
+      "NO Space Grotesk font (forbidden for dashboards)",
+      "NO teal green or teal blue (#1B93A4) accent colors (forbidden for dashboards)",
+      "NO AI assistant emojis (🤖, 🧠, 💡, 🔮, 🎯, etc.) for UI icons or accents",
+      "NO generic centered card layouts or floating full-width dark overlays",
+      "NO raw native HTML datepickers or selects - use customized Shadcn/UI components",
+      "NO transparent backgrounds on sticky headers, dropdown menus, or tooltips"
+    ]
+  },
+  "typography": {
+    "heading_font": "Merriweather, Georgia, 'Times New Roman', serif",
+    "body_font": "Manrope, 'IBM Plex Sans', -apple-system, sans-serif",
+    "mono_font": "'IBM Plex Mono', 'JetBrains Mono', monospace",
+    "type_hierarchy": {
+      "page_title": "text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight",
+      "section_heading": "text-xl sm:text-2xl font-serif font-semibold text-slate-800 tracking-tight border-b border-stone-200 pb-2 mb-4",
+      "subsection_heading": "text-base sm:text-lg font-sans font-semibold text-slate-800 uppercase tracking-wide",
+      "card_title": "text-sm sm:text-base font-sans font-bold text-slate-900 uppercase tracking-wider",
+      "body_prose": "text-sm sm:text-base font-sans text-slate-700 leading-relaxed font-normal",
+      "data_caption": "text-xs font-mono text-slate-500 uppercase tracking-widest",
+      "metric_value": "text-2xl sm:text-3xl font-mono font-bold text-slate-900 tracking-tight"
+    }
+  },
+  "colors": {
+    "background_base": "#FBF9F5",
+    "background_card": "#FFFFFF",
+    "background_sidebar": "#F4EF8",
+    "background_subtle": "#F3EFE6",
+    "border_subtle": "#E2DCD2",
+    "border_emphasis": "#CBD5E1",
+    "text_primary": "#0F172A",
+    "text_secondary": "#475569",
+    "text_muted": "#64748B",
+    "brand_primary": "#1E3A8A",
+    "brand_hover": "#1E40AF",
+    "brand_light": "#EFF6FF",
+    "semantic": {
+      "at_risk_alert": "#DC2626",
+      "at_risk_bg": "#FEF2F2",
+      "pass_success": "#166534",
+      "pass_bg": "#F0FDF4",
+      "distinction_accent": "#0284C7",
+      "withdrawn_muted": "#94A3B8",
+      "warning": "#D97706",
+      "warning_bg": "#FFFBEB"
+    },
+    "chart_palette": [
+      "#1E3A8A",
+      "#D97706",
+      "#0284C7",
+      "#166534",
+      "#DC2626",
+      "#7C3AED",
+      "#475569"
+    ]
+  },
+  "layout_and_navigation": {
+    "structure": "Fixed Left Navigation Sidebar + Fluid Research Scrollable Workspace with Top Status Bar",
+    "sidebar_width": "w-64 flex-shrink-0 border-r border-[#E2DCD2] bg-[#F4EFE8] h-screen sticky top-0 flex flex-col justify-between p-4",
+    "nav_items": [
+      {"id": "overview", "label": "Overview & Stats", "icon": "LayoutDashboard"},
+      {"id": "explore", "label": "Dataset Explorer", "icon": "BarChart3"},
+      {"id": "features", "label": "Feature Engineering", "icon": "Sliders"},
+      {"id": "experiments", "label": "Model Experiments", "icon": "PlayCircle"},
+      {"id": "results", "label": "Evaluation & Results", "icon": "Award"},
+      {"id": "phase2", "label": "Temporal & Ablation", "icon": "TrendingUp"},
+      {"id": "report", "label": "Research Report", "icon": "FileText"}
+    ],
+    "top_status_bar": "bg-white border-b border-[#E2DCD2] px-6 py-3 flex items-center justify-between shadow-sm sticky top-0 z-40"
+  },
+  "page_sections_guidelines": {
+    "overview": {
+      "title": "Dataset & Benchmark Overview",
+      "components": [
+        "Load Dataset Trigger with live status badge (Loaded / Raw / Processing)",
+        "4 Grid Summary Cards (Total Students: 32,593, Courses: 7 modules, Assessments: 206, Clicks/VLE interaction records: 10M+)",
+        "Outcome Class Distribution Stacked/Donut Chart (Pass, Distinction, Fail, Withdrawn)",
+        "Academic Context Note box explaining the early assessment prediction task window (e.g. Cut-off at Assessment 1 or Days 0-40)"
+      ]
+    },
+    "explore": {
+      "title": "Module & VLE Engagement Explorer",
+      "components": [
+        "Course Module Dropdown Selector (e.g., AAA, BBB, CCC, DDD, EEE, FFF, GGG) & Presentation (2013J, 2013B, 2014J, 2014B)",
+        "Daily VLE Clicks Over Time Line Chart with assessment deadline vertical benchmark lines",
+        "Assessment Score Distribution BoxPlot/Bar Chart grouped by outcome (Pass vs At-Risk)",
+        "Forum & Resource Interaction Heatmap/Table per module"
+      ]
+    },
+    "features": {
+      "title": "Feature Engineering & Tradeoff Matrix",
+      "components": [
+        "Tradeoffs Prose Panel: Side-by-side narrative discussing Early Cut-off Horizon vs Prediction Fidelity",
+        "Engineered Feature Categories: Demographic, Early VLE Activity, Early Assessment Performance, Forum Participation",
+        "Interactive Sample Feature Vector Table with search, sorting, and inline SMOTE balance indicators",
+        "Data-source missingness & imputation strategies badge list"
+      ]
+    },
+    "experiments": {
+      "title": "Classifier Training & Benchmark Runner",
+      "components": [
+        "Execution Panel: Run Benchmark Button (25 Trials x 10-Fold Stratified CV with SMOTE strictly in training folds)",
+        "Progress Indicator with live phase tracker (Pre-processing -> Fold Splitting -> Model Training -> Evaluation)",
+        "Model Selector & Hyperparameter Preview for Random Forest, XGBoost, Logistic Regression, SVM, Naive Bayes",
+        "Quick Preview metrics mini-cards during run execution"
+      ]
+    },
+    "results": {
+      "title": "Model Performance & Comparative Evaluation",
+      "components": [
+        "Comprehensive Evaluation Table: Mean ± Std for Precision, Recall, F1-Score, ROC-AUC across 25 trials x 10-fold CV",
+        "Bar Charts with Error Bars (95% CI) comparing classifiers across key metrics",
+        "Multi-model ROC Curves plot with AUC confidence intervals",
+        "Confusion Matrix interactive toggle per algorithm",
+        "Feature Importance Plot (Mean Gini / XGBoost Weight / Logistic Coefficients) with scholarly interpretation prose card"
+      ]
+    },
+    "phase2": {
+      "title": "Phase 2: Temporal Cut-Offs, Multi-Class Grade Drop & Data Ablation",
+      "components": [
+        "Temporal Cut-off Timeline Chart: Precision/Recall/F1 over 5 temporal cut-offs (e.g. Day 10, Day 20, Day 30, Day 40, Day 50)",
+        "Multi-class Grade Drop Transition Matrix / Sankey / Grouped Bar Chart (Distinction -> Pass -> Fail -> Withdrawn)",
+        "Data-Source Ablation Study: Metric delta when removing VLE Clicks, Forum interactions, Demographics, or Early Assessments",
+        "Prose research synthesis on optimal intervention timing"
+      ]
+    },
+    "report": {
+      "title": "Research Report & PDF Export",
+      "components": [
+        "Executive Academic Summary document layout with key findings and methodology overview",
+        "Export PDF Button & Markdown Summary copy options",
+        "Downloadable Model Artifacts / Cleaned Feature CSV summary download"
+      ]
+    }
+  },
+  "component_styling_rules": {
+    "cards": "bg-white border border-[#E2DCD2] rounded-md p-6 shadow-xs hover:border-[#CBD5E1] transition-colors duration-200",
+    "tables": "w-full text-sm text-left border-collapse border border-[#E2DCD2] font-sans bg-white header-bg-[#F8F6F0]",
+    "buttons": {
+      "primary": "bg-[#1E3A8A] hover:bg-[#1E40AF] text-white font-medium px-4 py-2 rounded-md shadow-xs transition-colors text-sm flex items-center gap-2 cursor-pointer",
+      "secondary": "bg-[#F3EFE6] hover:bg-[#E2DCD2] text-slate-800 border border-[#E2DCD2] font-medium px-4 py-2 rounded-md transition-colors text-sm flex items-center gap-2 cursor-pointer",
+      "outline": "border border-[#CBD5E1] hover:bg-[#F8F6F0] text-slate-700 font-medium px-4 py-2 rounded-md transition-colors text-sm flex items-center gap-2 cursor-pointer"
+    },
+    "recharts": {
+      "container": "w-full h-[320px] pt-4",
+      "tooltip": "bg-white border border-[#E2DCD2] p-3 rounded-md shadow-md text-xs font-sans text-slate-800",
+      "grid": "stroke-[#E2DCD2] stroke-dasharray='3 3'"
+    }
+  },
+  "testing_attributes": {
+    "required": true,
+    "pattern": "data-testid='<role>-<feature>-<identifier>'",
+    "examples": [
+      "data-testid='btn-load-dataset'",
+      "data-testid='nav-item-overview'",
+      "data-testid='nav-item-explore'",
+      "data-testid='nav-item-features'",
+      "data-testid='nav-item-experiments'",
+      "data-testid='nav-item-results'",
+      "data-testid='nav-item-phase2'",
+      "data-testid='nav-item-report'",
+      "data-testid='btn-run-experiments'",
+      "data-testid='select-course-module'",
+      "data-testid='table-results-metrics'",
+      "data-testid='chart-roc-curves'",
+      "data-testid='chart-temporal-cutoffs'",
+      "data-testid='btn-download-report'"
+    ]
+  },
+  "image_urls": [
+    {
+      "category": "academic_research",
+      "description": "Student studying with notebook and paper chart research",
+      "url": "https://images.unsplash.com/photo-1711097383282-28097ae16b1d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzV8MHwxfHNlYXJjaHwzfHx1bml2ZXJzaXR5JTIwbGVhcm5pbmclMjBhbmFseXRpY3MlMjBub3RlYm9vayUyMHN0dWRlbnQlMjBzdHVkeWluZ3xlbnwwfHx8fDE3OTMzMDA3NDZ8MA&ixlib=rb-4.1.0&q=85"
+    }
+  ]
+}
